@@ -1,0 +1,7 @@
+= webbynode-api
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 Shane Sveller. See LICENSE for details.
