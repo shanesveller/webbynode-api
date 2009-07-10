@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "webbynode-api"
-    gem.summary = %Q{TODO}
+    gem.summary = "wraps the WebbyNode API into nice Ruby objects"
     gem.email = "shanesveller@gmail.com"
     gem.homepage = "http://github.com/shanesveller/webbynode-api"
     gem.authors = ["Shane Sveller"]

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hash>
+  <client>
+    <city>Nameless City</city>
+    <address1>1234 Nonexistent Lane</address1>
+    <country>US</country>
+    <postcode>65432</postcode>
+    <phonenumber>555-867-5309</phonenumber>
+    <credit type="decimal">1.5</credit>
+    <lastname>Sveller</lastname>
+    <datecreated type="date">2009-06-30</datecreated>
+    <firstname>Shane</firstname>
+    <status>Active</status>
+    <state>My State</state>
+    <email>example@email.com</email>
+    <companyname>Phantom Inc.</companyname>
+  </client>
+</hash>
