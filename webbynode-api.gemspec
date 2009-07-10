@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{webbynode-api}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shane Sveller"]
@@ -20,9 +20,21 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/webbynode-api.rb",
-     "test/data/api-xml-client.xml",
+     "lib/webbynode-api/data.rb",
+     "test/data/client.xml",
+     "test/data/dns-1.xml",
+     "test/data/dns-records.xml",
+     "test/data/dns.xml",
+     "test/data/webby-reboot.xml",
+     "test/data/webby-shutdown.xml",
+     "test/data/webby-start.xml",
+     "test/data/webby-status-off.xml",
+     "test/data/webby-status-reboot.xml",
+     "test/data/webby-status-shutdown.xml",
+     "test/data/webby-status.xml",
      "test/test_helper.rb",
-     "test/webbynode-api_test.rb"
+     "test/webbynode-api_test.rb",
+     "webbynode-api.gemspec"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/shanesveller/webbynode-api}
