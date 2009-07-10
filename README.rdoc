@@ -9,11 +9,22 @@ design document are available
 * Client information such as account status, contact/address info, credit
 
 == Example Usage
+=== Account
   require 'webbynode-api'
   email = "example@email.com"
   api_key = "1234567890abcdef"
   @client = WebbyNode::Client.new(email, api_key)
   pp @client.firstname
+
+=== Webby
+  require 'webbynode-api'
+  email = "example@email.com"
+  api_key = "1234567890abcdef"
+  hostname = "webby1"
+  @webby = WebbyNode::Webby.new(email, api_key, hostname)
+  @webby.status
+  @webby.shutdown
+  @webby.status
 
 == Copyright
 
