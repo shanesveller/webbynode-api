@@ -10,6 +10,15 @@ class WebbynodeApiTest < Test::Unit::TestCase
       @api = WebbyNode::Client.new(email, api_key)
     end
 
+    should "use method missing to get values for present keys" do
+      @api.methods.include?("firstname").should == false
+      @api.firstname.should == "Shane"
+    end
+
+    should "return nil for missing keys" do
+      @api.blank.should be(nil)
+    end
+
     should "fetch physical address information" do
       @api.address1.should == "1234 Nonexistent Lane"
       @api.city.should == "Nameless City"
