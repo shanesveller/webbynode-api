@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hash>
+  <zones type="array">
+    <zone>
+      <status>Active</status>
+      <ttl type="integer">86400</ttl>
+      <domain>example.com.</domain>
+      <id type="integer">1</id>
+    </zone>
+    <zone>
+      <status>Active</status>
+      <ttl type="integer">7200</ttl>
+      <domain>fluid.com.</domain>
+      <id type="integer">111</id>
+    </zone>
+    <zone>
+      <status>Inactive</status>
+      <ttl type="integer">86400</ttl>
+      <domain>inactive.com.</domain>
+      <id type="integer">132</id>
+    </zone>
+  </zones>
+</hash>

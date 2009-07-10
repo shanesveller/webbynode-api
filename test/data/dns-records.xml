@@ -1,0 +1,22 @@
+<!-- Courtesy of the WebbyNode API guide, version 1, page 10 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<hash>
+  <records type="array">
+    <record>
+      <type>A</type>
+      <aux type="integer">0</aux>
+      <name/>
+      <data>200.100.200.100</data>
+      <id type="integer">51</id>
+      <ttl type="integer">86400</ttl>
+    </record>
+    <record>
+      <type>A</type>
+      <aux type="integer">0</aux>
+      <name>*</name>
+      <data>200.100.200.100</data>
+      <id type="integer">26</id>
+      <ttl type="integer">86400</ttl>
+    </record>
+  </records>
+</hash>

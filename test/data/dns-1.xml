@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hash>
+  <zone>
+    <status>Active</status>
+    <ttl type="integer">86400</ttl>
+    <domain>example.com.</domain>
+    <id type="integer">1</id>
+  </zone>
+</hash>

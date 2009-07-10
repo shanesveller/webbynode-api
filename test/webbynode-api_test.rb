@@ -70,4 +70,50 @@ class WebbynodeApiTest < Test::Unit::TestCase
       @webby.status.should == "Rebooting"
     end
   end
+
+  context "fetching DNS data from API without id" do
+    setup do
+      email = "example@email.com"
+      api_key = "123456"
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      @dns = WebbyNode::DNS.new(email, api_key)
+    end
+    should "return an array of zones with domain, status, id, and TTL" do
+      @dns.zones.is_a?(Array).should be(true)
+      @dns.zones.size.should == 3
+      zone = @dns.zones.first
+      zone["id"].should == 1
+      zone["status"].should == "Active"
+      zone["domain"].should == "example.com."
+      zone["ttl"].should == 86400
+      zone = @dns.zones.last
+      zone["id"].should == 132
+      zone["status"].should == "Inactive"
+      zone["domain"].should == "inactive.com."
+      zone["ttl"].should == 86400
+    end
+  end
+  context "fetching DNS data from API with id" do
+    setup do
+      email = "example@email.com"
+      api_key = "123456"
+      id = 1
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
+      @dns = WebbyNode::DNS.new(email, api_key, id)
+    end
+    should "return domain name, status, id and TTL" do
+      @dns.domain.should == "example.com."
+      @dns.id.should == 1
+      @dns.ttl.should == 86400
+      @dns.status.should == "Active"
+    end
+    should "return an array of records with id, type, name, data, auxiliary data, and TTL" do
+      @dns.records.is_a?(Array).should be(true)
+    end
+  end
 end

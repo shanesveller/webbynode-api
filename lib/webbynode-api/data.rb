@@ -8,7 +8,7 @@ class WebbyNode
   end
 
   # Represents an individual webby with status, reboot/shutdown/start functionality
-  # via method_missing
+  # via +method_missing+
   class Webby < WebbyNode::APIObject
     attr_accessor :hostname
 
@@ -25,6 +25,27 @@ class WebbyNode
       else
         raise "No such action possible on a Webby."
       end
+    end
+  end
+
+  class DNS < WebbyNode::APIObject
+    attr_accessor :id
+
+    # Optionally takes an ID as the third argument to fetch just that zone. Without,
+    # you get an array of all zones.
+    def initialize(email, api_key, id = nil)
+      super(email, api_key)
+      if id
+        @id = id
+        @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
+      else
+        @data = auth_get("/api/xml/dns")["hash"]
+      end
+    end
+
+    def records
+      raise "This method should only be called on DNS instances with an id." unless @id
+      auth_get("/api/xml/dns/#{@id}/records")["hash"]["records"]
     end
   end
 end

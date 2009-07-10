@@ -9,7 +9,14 @@ is currently based on the API guide version 1.
 == Currently Supported API functionality
 * Client information such as account status, contact/address info, credit
 * Webby information (status) and simple actions (start, shutdown, reboot)
-* (INCOMPLETE) DNS information such as domain name, TTL, and status
+* DNS zone information such as domain name, TTL, and status
+
+== In Development
+* DNS record information such as type, data, name, id, and TTL
+
+== Planned Features
+* DNS zone/record creation, editing and deletion
+* Whatever else WebbyNode gives us in the API :)
 
 == Example Usage
 === Account
@@ -17,7 +24,7 @@ is currently based on the API guide version 1.
   email = "example@email.com"
   api_key = "1234567890abcdef"
   @client = WebbyNode::Client.new(email, api_key)
-  pp @client.firstname
+  puts @client.firstname
 
 === Webby
   require 'webbynode-api'
@@ -28,6 +35,17 @@ is currently based on the API guide version 1.
   @webby.status
   @webby.shutdown
   @webby.status
+
+=== DNS
+  require 'webbynode-api'
+  email = "example@email.com"
+  api_key = "1234567890abcdef"
+  zone_id = 123
+  @dns = WebbyNode::DNS.new(email, api_key)
+  pp @dns.zones
+  @dns = WebbyNode::DNS.new(email, api_key, zone_id)
+  pp @dns.domain
+  pp @dns.records
 
 == Copyright
 
