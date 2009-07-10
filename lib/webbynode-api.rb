@@ -3,7 +3,7 @@ gem 'httparty'
 require 'httparty'
 
 class WebbyNode
-  class Client
+  class APIObject
     include HTTParty
     base_uri "https://manager.webbynode.com"
     format :xml
@@ -13,7 +13,6 @@ class WebbyNode
     def initialize(email, api_key)
       @email = email
       @api_key = api_key
-      @data = self.auth_get('/api/xml/client')["hash"]["client"]
     end
 
     def auth_get(url, options = {})
@@ -28,3 +27,5 @@ class WebbyNode
     end
   end
 end
+
+require File.join(File.dirname(__FILE__), 'webbynode-api', 'client')
