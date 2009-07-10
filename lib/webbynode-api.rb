@@ -10,17 +10,20 @@ class WebbyNode
 
     attr_accessor :email, :api_key, :data
 
+    # Creates a new API object secured by e-mail address and API token
     def initialize(email, api_key)
       @email = email
       @api_key = api_key
     end
 
+    # Uses HTTParty to submit a secure API request via email address and token
     def auth_get(url, options = {})
       options[:query] ||= {}
       options[:query].merge!(:email => @email, :token => @api_key)
       self.class.get(url, options)
     end
 
+    # Catches simple requests for specific API data returned via a hash
     def method_missing(method)
       key = @data[method.to_s] if @data
       key

@@ -1,4 +1,5 @@
 class WebbyNode
+  # Represents the account-holder's information
   class Client < WebbyNode::APIObject
     def initialize(email, api_key)
       super(email, api_key)
@@ -6,6 +7,8 @@ class WebbyNode
     end
   end
 
+  # Represents an individual webby with status, reboot/shutdown/start functionality
+  # via method_missing
   class Webby < WebbyNode::APIObject
     attr_accessor :hostname
 
