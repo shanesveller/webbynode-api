@@ -1,6 +1,19 @@
 = webbynode-api
 
-Description goes here.
+This gem wraps the API available for the VPS hosting company
+{WebbyNode}[http://www.webbynode.com]. Details and a preliminary
+design document are available
+{here}[http://howto.webbynode.com/topic.php?id=25].
+
+== Currently Supported API functionality
+* Client information such as account status, contact/address info, credit
+
+== Example Usage
+  require 'webbynode-api'
+  email = "example@email.com"
+  api_key = "1234567890abcdef"
+  @client = WebbyNode::Client.new(email, api_key)
+  pp @client.firstname
 
 == Copyright
 
