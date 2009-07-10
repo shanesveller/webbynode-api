@@ -22,10 +22,10 @@ class WebbyNode
     end
 
     def method_missing(method)
-      key = @data[method.to_s]
+      key = @data[method.to_s] if @data
       key
     end
   end
 end
 
-require File.join(File.dirname(__FILE__), 'webbynode-api', 'client')
+require File.join(File.dirname(__FILE__), 'webbynode-api', 'data')
