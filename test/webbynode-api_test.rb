@@ -1,11 +1,29 @@
 require 'test_helper'
 
 class WebbynodeApiTest < Test::Unit::TestCase
+  context "with bad API token or email" do
+    setup do
+      @email ="example@email.com"
+      @api_key = "123456"
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/client\?\w+/i, :body => File.read("#{data_path}/bad-auth.xml"))
+    end
+    should "raise ArgumentError if no API data given" do
+      assert_raise(ArgumentError){ WebbyNode::Client.new(nil, nil) }
+      assert_raise(ArgumentError){ WebbyNode::Client.new(@email, nil) }
+      assert_raise(ArgumentError){ WebbyNode::Client.new(nil, @api_key) }
+    end
+    should "raise ArgumentError if bad API data given" do
+      assert_raise(ArgumentError){ WebbyNode::Client.new(@email, @api_key) }
+    end
+  end
   context "fetching client data from API" do
     setup do
       email = "example@email.com"
       api_key = "123456"
       data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/client\?.+/i, :body => File.read("#{data_path}/client.xml"))
       @api = WebbyNode::Client.new(email, api_key)
     end
@@ -48,6 +66,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
       api_key = "123456"
       hostname = "webby1"
       data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/start\?.+/i, :body => File.read("#{data_path}/webby-start.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/shutdown\?.+/i, :body => File.read("#{data_path}/webby-shutdown.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/reboot\?.+/i, :body => File.read("#{data_path}/webby-reboot.xml"))
@@ -88,6 +107,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
       email = "example@email.com"
       api_key = "123456"
       data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       @dns = WebbyNode::DNS.new(email, api_key)
@@ -113,6 +133,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
       api_key = "123456"
       id = 1
       data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
