@@ -12,9 +12,15 @@ class WebbyNode
   class Webby < WebbyNode::APIObject
     attr_accessor :hostname
 
-    def initialize(email, api_key, hostname)
+    # Optionally takes a hostname as the third argument to fetch just that Webby.
+    # Leaving this nil set @data to an array of all the account's webbies
+    def initialize(email, api_key, hostname = nil)
       super(email, api_key)
-      @hostname = hostname
+      if hostname
+        @hostname = hostname
+      else
+        @data = auth_get("/api/xml/webbies")["hash"]["webbies"]
+      end
     end
 
     def method_missing(method)
@@ -22,6 +28,8 @@ class WebbyNode
         return auth_get("/api/xml/webby/#{@hostname}/status")["hash"]["status"]
       elsif %w(start shutdown reboot).include? method.to_s
         return auth_get("/api/xml/webby/#{@hostname}/#{method.to_s}")["hash"]["job_id"]
+      elsif method.to_s == "list"
+        return @data
       else
         raise "No such action possible on a Webby."
       end

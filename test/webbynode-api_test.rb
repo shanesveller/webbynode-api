@@ -51,7 +51,9 @@ class WebbynodeApiTest < Test::Unit::TestCase
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/start\?.+/i, :body => File.read("#{data_path}/webby-start.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/shutdown\?.+/i, :body => File.read("#{data_path}/webby-shutdown.xml"))
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/reboot\?.+/i, :body => File.read("#{data_path}/webby-reboot.xml"))
+      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webbies\?.+/i, :body => File.read("#{data_path}/webbies.xml"))
       @webby = WebbyNode::Webby.new(email, api_key, hostname)
+      @webbies = WebbyNode::Webby.new(email, api_key)
     end
     should "return a job ID when starting, shutting down, or rebooting" do
       @webby.start.should == 2562
@@ -68,6 +70,16 @@ class WebbynodeApiTest < Test::Unit::TestCase
       @webby.status.should == "off"
       FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-reboot.xml"))
       @webby.status.should == "Rebooting"
+    end
+    should "return a array of webbies" do
+      @webbies.list.is_a?(Array).should be(true)
+      webby = @webbies.list.first
+      webby["status"].should == "on"
+      webby["ip"].should == "222.111.222.111"
+      webby["node"].should == "location-a01"
+      webby["plan"].should == "Webby_384"
+      webby["name"].should == "webby1"
+      webby["notes"].should be(nil)
     end
   end
 

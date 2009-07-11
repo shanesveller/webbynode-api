@@ -9,6 +9,7 @@ is currently based on the API guide version 1.
 == Currently Supported API functionality
 * Client information such as account status, contact/address info, credit
 * Webby information (status) and simple actions (start, shutdown, reboot)
+* List all webbies
 * DNS zone information such as domain name, TTL, and status
 
 == In Development
@@ -31,10 +32,14 @@ is currently based on the API guide version 1.
   email = "example@email.com"
   api_key = "1234567890abcdef"
   hostname = "webby1"
+  # Get a single Webby's info
   @webby = WebbyNode::Webby.new(email, api_key, hostname)
   @webby.status
   @webby.shutdown
   @webby.status
+  # Get a list of all Webbies
+  @webbies = WebbyNode::Webby.new(email, api_key)
+  puts @webbies.list
 
 === DNS
   require 'webbynode-api'
