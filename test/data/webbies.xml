@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hash>
+  <webbies type="array">
+    <webby>
+      <status>on</status>
+      <ip>222.111.222.111</ip>
+      <node>location-a01</node>
+      <plan>Webby_384</plan>
+      <name>webby1</name>
+      <notes nil="true"></notes>
+    </webby>
+  </webbies>
+</hash>
