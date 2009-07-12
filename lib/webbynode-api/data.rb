@@ -52,8 +52,31 @@ class WebbyNode
     end
 
     def records
-      raise "This method should only be called on DNS instances with an id." unless @id
+      raise "This method should only be called on DNS instances with an id" unless @id
       auth_get("/api/xml/dns/#{@id}/records")["hash"]["records"]
+    end
+
+    def self.new_zone(options = {})
+      raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
+      raise ArgumentError, ":domain and :ttl are required arguments" unless options[:domain] && options[:ttl]
+      if options[:status]
+        raise ArgumentError, ":status must be 'Active' or 'Inactive'" unless %w(Active Inactive).include? options[:status]
+      end
+      zone_data = auth_post("/api/xml/dns/new", :query =>
+        {
+          :email => options[:email],
+          :token => options[:token],
+          "zone[domain]" => options[:domain],
+          "zone[ttl]" => options[:ttl],
+          "zone[status]" => options[:status]
+        })
+      return zone_data["hash"]
+    end
+
+    def self.delete_zone(options = {})
+      raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
+      raise ArgumentError, ":id is a required argument" unless options[:id]
+      return auth_post("/api/xml/dns/#{options[:id]}/delete", :query => options)["hash"]["success"]
     end
   end
 end

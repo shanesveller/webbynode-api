@@ -18,10 +18,22 @@ class WebbyNode
 
     # Uses HTTParty to submit a secure API request via email address and token
     def auth_get(url, options = {})
-      raise ArgumentError, "No API information given" unless @email && @api_key
+      raise ArgumentError, "API information is missing or incomplete" unless @email && @api_key
       options[:query] ||= {}
       options[:query].merge!(:email => @email, :token => @api_key)
       results = self.class.get(url, options)
+      raise ArgumentError, "Probable bad API information given" if results == {}
+      return results
+    end
+
+    def auth_post(url, options = {})
+      self.class.auth_post(url, options)
+    end
+
+    def self.auth_post(url, options = {})
+      options[:query] ||= {}
+      raise ArgumentError, "API information is missing or incomplete" unless options[:query][:email] && options[:query][:token]
+      results = self.post(url, options)
       raise ArgumentError, "Probable bad API information given" if results == {}
       return results
     end

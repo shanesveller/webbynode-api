@@ -8,14 +8,22 @@ class WebbynodeApiTest < Test::Unit::TestCase
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/client\?\w+/i, :body => File.read("#{data_path}/bad-auth.xml"))
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/.+$/, :body => "")
     end
     should "raise ArgumentError if no API data given" do
-      assert_raise(ArgumentError){ WebbyNode::Client.new(nil, nil) }
-      assert_raise(ArgumentError){ WebbyNode::Client.new(@email, nil) }
-      assert_raise(ArgumentError){ WebbyNode::Client.new(nil, @api_key) }
+      # for auth_get
+      assert_raise(ArgumentError, "API information is missing or incomplete"){ WebbyNode::Client.new(nil, nil) }
+      assert_raise(ArgumentError, "API information is missing or incomplete"){ WebbyNode::Client.new(@email, nil) }
+      assert_raise(ArgumentError, "API information is missing or incomplete"){ WebbyNode::Client.new(nil, @api_key) }
+      # for auth_post
+      assert_raise(ArgumentError, "API information is missing or incomplete"){ WebbyNode::APIObject.new(nil, nil).auth_post("",{}) }
+      assert_raise(ArgumentError, "API information is missing or incomplete"){ WebbyNode::APIObject.new(@email, nil).auth_post("",{}) }
+      assert_raise(ArgumentError, "API information is missing or incomplete"){ WebbyNode::APIObject.new(nil, @api_key).auth_post("",{}) }
     end
     should "raise ArgumentError if bad API data given" do
-      assert_raise(ArgumentError){ WebbyNode::Client.new(@email, @api_key) }
+      assert_raise(ArgumentError, "Probable bad API information given"){ WebbyNode::Client.new(@email, @api_key) }
+      # TODO: Need XML fixture file for this
+      # assert_raise(ArgumentError, "Probable bad API information given"){ WebbyNode::APIObject.new(@email, @api_key).auth_post("",{}) }
     end
   end
   context "fetching client data from API" do
@@ -162,6 +170,50 @@ class WebbynodeApiTest < Test::Unit::TestCase
       record["name"].should be(nil)
       record["aux"].should == 0
       record["type"].should == "A"
+    end
+  end
+  context "creating a new DNS zone" do
+    setup do
+      @email = "example@email.com"
+      @api_key = "123456"
+      @domain = "example.com."
+      @ttl = 86400
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/new\?.+/i, :body => File.read("#{data_path}/new-zone.xml"))
+    end
+    should "raise ArgumentError if API information isn't present" do
+      assert_raise(ArgumentError,"API access information via :email and :token are required arguments"){ WebbyNode::DNS.new_zone(:token => @api_key, :domain => @domain, :ttl => @ttl) }
+      assert_raise(ArgumentError,"API access information via :email and :token are required arguments"){ WebbyNode::DNS.new_zone(:email => @email, :domain => @domain, :ttl => @ttl) }
+    end
+    should "raise ArgumentError if :domain or :ttl aren't included in method call" do
+      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :ttl => @ttl) }
+      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :domain => @domain) }
+    end
+    should "raise ArgumentError if :status is not a valid option" do
+      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :ttl => @ttl, :status => "Not active") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :domain => @domain, :ttl => @ttl, :status => "Active") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :domain => @domain, :ttl => @ttl, :status => "Inactive") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :domain => @domain, :ttl => @ttl, :status => nil) }
+    end
+    should "return a Hash containing the new zone's information" do
+      @new_zone =  WebbyNode::DNS.new_zone(:email => @email, :token => @api_key, :domain => @domain, :ttl => @ttl, :status => "Inactive")
+      @new_zone["id"].should == 171
+      @new_zone["domain"].should == "example.com."
+      @new_zone["ttl"].should == 86400
+    end
+  end
+  context "deleting a DNS zone" do
+    setup do
+      @email = "example@email.com"
+      @api_key = "123456"
+      @id = 171
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/delete\?.+/i, :body => File.read("#{data_path}/delete-zone.xml"))
+    end
+    should "return a boolean true for succesful deletion" do
+      WebbyNode::DNS.delete_zone(:email => @email, :token => @api_key, :id => @id)
     end
   end
 end
