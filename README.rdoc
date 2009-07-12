@@ -62,8 +62,12 @@ models will be converted to this new design pattern soon.
   require 'webbynode-api'
   email = "example@email.com"
   api_key = "1234567890abcdef"
-  @new_zone = WebbyNode::DNS.new_zone(:email => email, :token => token, :domain => "mynewdomain.com.", :ttl => 86400)
+  @new_zone = WebbyNode::DNS.new_zone(:email => email, :token => api_key, :domain => "mynewdomain.com.", :ttl => 86400)
   pp @new_zone["id"]
+  # => 171
+
+  WebbyNode::DNS.delete_zone(:email => email, :token => api_key, :id => 171)
+  # => true
 
 == Copyright
 
