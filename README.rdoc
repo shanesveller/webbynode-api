@@ -6,6 +6,11 @@ design document for the API itself are available
 {here}[http://howto.webbynode.com/topic.php?id=25]. Functionality
 is currently based on the API guide version 2.
 
+== Notice
+All previous methods/initializers used named/ordered arguments. New API
+interactions are designed to use hashes of arguments instead. Older API
+models will be converted to this new design pattern soon.
+
 == Currently Supported API functionality
 * Client information such as account status, contact/address info, credit
 * Webby information (status) and simple actions (start, shutdown, reboot)
