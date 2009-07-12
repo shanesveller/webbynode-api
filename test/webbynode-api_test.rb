@@ -147,6 +147,13 @@ class WebbynodeApiTest < Test::Unit::TestCase
     end
     should "return an array of records with id, type, name, data, auxiliary data, and TTL" do
       @dns.records.is_a?(Array).should be(true)
+      record = @dns.records.first
+      record["id"].should == 51
+      record["ttl"].should == 86400
+      record["data"].should == "200.100.200.100"
+      record["name"].should be(nil)
+      record["aux"].should == 0
+      record["type"].should == "A"
     end
   end
 end
