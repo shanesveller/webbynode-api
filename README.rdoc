@@ -11,6 +11,10 @@ All previous methods/initializers used named/ordered arguments. New API
 interactions are designed to use hashes of arguments instead. Older API
 models will be converted to this new design pattern soon.
 
+Also, any new/improved documentation will instead be visible in the
+{YARD documentation}[http://rdoc.info/projects/shanesveller/webbynode-api]
+hosted at {rdoc.info}[http://rdoc.info].
+
 == Currently Supported API functionality
 * Client information such as account status, contact/address info, credit
 * Webby information (status) and simple actions (start, shutdown, reboot)
