@@ -56,5 +56,5 @@ end
 
 require 'yard'
 YARD::Rake::YardocTask.new do |t|
-  t.files   = ['lib/**/*.rb']
+  t.files   = ['lib/**/*.rb', 'README.markdown']
 end
