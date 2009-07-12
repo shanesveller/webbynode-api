@@ -11,6 +11,7 @@ is currently based on the API guide version 2.
 * Webby information (status) and simple actions (start, shutdown, reboot)
 * List all webbies
 * DNS zone information such as domain name, TTL, and status
+* Creation/deletion of DNS zones
 
 == In Development
 * DNS record information such as type, data, name, id, and TTL
@@ -51,6 +52,13 @@ is currently based on the API guide version 2.
   @dns = WebbyNode::DNS.new(email, api_key, zone_id)
   pp @dns.domain
   pp @dns.records
+
+=== DNS Zone Creation/Deletion
+  require 'webbynode-api'
+  email = "example@email.com"
+  api_key = "1234567890abcdef"
+  @new_zone = WebbyNode::DNS.new_zone(:email => email, :token => token, :domain => "mynewdomain.com.", :ttl => 86400)
+  pp @new_zone["id"]
 
 == Copyright
 
