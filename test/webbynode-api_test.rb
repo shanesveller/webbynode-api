@@ -7,7 +7,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
       @api_key = "123456"
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/client\?\w+/i, :body => File.read("#{data_path}/bad-auth.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/client\?\w+/i, :body => File.read("#{data_path}/bad-auth.xml"))
     end
     should "raise ArgumentError if no API data given" do
       assert_raise(ArgumentError){ WebbyNode::Client.new(nil, nil) }
@@ -24,7 +24,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
       api_key = "123456"
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/client\?.+/i, :body => File.read("#{data_path}/client.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/client\?.+/i, :body => File.read("#{data_path}/client.xml"))
       @api = WebbyNode::Client.new(email, api_key)
     end
 
@@ -67,10 +67,10 @@ class WebbynodeApiTest < Test::Unit::TestCase
       hostname = "webby1"
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/start\?.+/i, :body => File.read("#{data_path}/webby-start.xml"))
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/shutdown\?.+/i, :body => File.read("#{data_path}/webby-shutdown.xml"))
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/reboot\?.+/i, :body => File.read("#{data_path}/webby-reboot.xml"))
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webbies\?.+/i, :body => File.read("#{data_path}/webbies.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/start\?.+/i, :body => File.read("#{data_path}/webby-start.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/shutdown\?.+/i, :body => File.read("#{data_path}/webby-shutdown.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/reboot\?.+/i, :body => File.read("#{data_path}/webby-reboot.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webbies\?.+/i, :body => File.read("#{data_path}/webbies.xml"))
       @webby = WebbyNode::Webby.new(email, api_key, hostname)
       @webbies = WebbyNode::Webby.new(email, api_key)
     end
@@ -81,13 +81,13 @@ class WebbynodeApiTest < Test::Unit::TestCase
     end
     should "return a valid status" do
       data_path = File.join(File.dirname(__FILE__), "data")
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status.xml"))
       @webby.status.should == "on"
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-shutdown.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-shutdown.xml"))
       @webby.status.should == "Shutting down"
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-off.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-off.xml"))
       @webby.status.should == "off"
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-reboot.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-reboot.xml"))
       @webby.status.should == "Rebooting"
     end
     should "return a array of webbies" do
@@ -108,8 +108,8 @@ class WebbynodeApiTest < Test::Unit::TestCase
       api_key = "123456"
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       @dns = WebbyNode::DNS.new(email, api_key)
     end
     should "return an array of zones with domain, status, id, and TTL" do
@@ -134,9 +134,9 @@ class WebbynodeApiTest < Test::Unit::TestCase
       id = 1
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
-      FakeWeb.register_uri(:get, /https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
       @dns = WebbyNode::DNS.new(email, api_key, id)
     end
     should "return domain name, status, id and TTL" do

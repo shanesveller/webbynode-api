@@ -4,7 +4,7 @@ This gem wraps the API available for the VPS hosting company
 {WebbyNode}[http://www.webbynode.com]. Details and a preliminary
 design document for the API itself are available
 {here}[http://howto.webbynode.com/topic.php?id=25]. Functionality
-is currently based on the API guide version 1.
+is currently based on the API guide version 2.
 
 == Currently Supported API functionality
 * Client information such as account status, contact/address info, credit
