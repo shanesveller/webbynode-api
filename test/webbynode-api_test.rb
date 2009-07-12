@@ -60,7 +60,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
     end
   end
 
-  context "fetching webbies data from API" do
+  context "fetching webbies data from API with hostname" do
     setup do
       email = "example@email.com"
       api_key = "123456"
@@ -70,9 +70,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/start\?.+/i, :body => File.read("#{data_path}/webby-start.xml"))
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/shutdown\?.+/i, :body => File.read("#{data_path}/webby-shutdown.xml"))
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/reboot\?.+/i, :body => File.read("#{data_path}/webby-reboot.xml"))
-      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webbies\?.+/i, :body => File.read("#{data_path}/webbies.xml"))
       @webby = WebbyNode::Webby.new(email, api_key, hostname)
-      @webbies = WebbyNode::Webby.new(email, api_key)
     end
     should "return a job ID when starting, shutting down, or rebooting" do
       @webby.start.should == 2562
@@ -89,6 +87,16 @@ class WebbynodeApiTest < Test::Unit::TestCase
       @webby.status.should == "off"
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-reboot.xml"))
       @webby.status.should == "Rebooting"
+    end
+  end
+  context "fetching webbies data from API without hostname" do
+    setup do
+      email = "example@email.com"
+      api_key = "123456"
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webbies\?.+/i, :body => File.read("#{data_path}/webbies.xml"))
+      @webbies = WebbyNode::Webby.new(email, api_key)
     end
     should "return a array of webbies" do
       @webbies.list.is_a?(Array).should be(true)
