@@ -2,25 +2,26 @@
 
 Gem::Specification.new do |s|
   s.name = %q{webbynode-api}
-  s.version = "0.1.2"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shane Sveller"]
   s.date = %q{2009-07-13}
+  s.default_executable = %q{webby}
   s.email = %q{shanesveller@gmail.com}
+  s.executables = ["webby"]
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.markdown",
-     "README.rdoc"
+     "README.markdown"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
      "README.markdown",
-     "README.rdoc",
      "Rakefile",
      "VERSION",
+     "bin/webby",
      "lib/webbynode-api.rb",
      "lib/webbynode-api/data.rb",
      "lib/webbynode-api/dns.rb",
@@ -34,6 +35,7 @@ Gem::Specification.new do |s|
      "test/data/dns-1.xml",
      "test/data/dns-records.xml",
      "test/data/dns.xml",
+     "test/data/new-record.xml",
      "test/data/new-zone.xml",
      "test/data/webbies.xml",
      "test/data/webby-reboot.xml",
@@ -67,8 +69,14 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<httparty>, [">= 0.4.3"])
+      s.add_runtime_dependency(%q<optiflag>, [">= 0.6.5"])
     else
+      s.add_dependency(%q<httparty>, [">= 0.4.3"])
+      s.add_dependency(%q<optiflag>, [">= 0.6.5"])
     end
   else
+    s.add_dependency(%q<httparty>, [">= 0.4.3"])
+    s.add_dependency(%q<optiflag>, [">= 0.6.5"])
   end
 end
