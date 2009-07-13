@@ -2,11 +2,11 @@ require 'rubygems'
 gem 'httparty'
 require 'httparty'
 
-# @author Shane Sveller
 class WebbyNode
 
   # @author Shane Sveller
   # @since 0.0.1
+  # @version 0.1.0
   class APIObject
     include HTTParty
     base_uri "https://manager.webbynode.com"
@@ -15,19 +15,20 @@ class WebbyNode
     # E-mail address used to access the WebbyNode API
     attr_accessor :email
     # API token used to access the WebbyNode API, visible at https://manager.webbynode.com/account
-    attr_accessor :api_key
+    attr_accessor :token
     # Stores the results of the HTTParty API interactions
     attr_accessor :data
 
     # Creates a new API object secured by e-mail address and API token
     #
-    # @param [String] email e-mail address with API access
-    # @param [String] api_key API token that matches the included e-mail address
+    # @option options [String] :email e-mail address with API access
+    # @option options [String] :token API token that matches the included e-mail address
     # @example Instantiates a new API access object
-    #   WebbyNode::APIObject.new("example@email.com", "123456abcdef")
-    def initialize(email, api_key)
-      @email = email
-      @api_key = api_key
+    #   WebbyNode::APIObject.new(:email => "example@email.com", :token => "123456abcdef")
+    def initialize(options = {})
+      raise ArgumentError, ":email and :token are required arguments" unless options[:email] && options[:token]
+      @email = options[:email]
+      @token = options[:token]
     end
 
     # Uses HTTParty to submit a secure API request via email address and token
@@ -35,9 +36,9 @@ class WebbyNode
     # @param [Hash] options Hash of additional HTTParty parameters
     # @option options [Hash] :query query hash used to build the final URL
     def auth_get(url, options = {})
-      raise ArgumentError, "API information is missing or incomplete" unless @email && @api_key
+      raise ArgumentError, "API information is missing or incomplete" unless @email && @token
       options[:query] ||= {}
-      options[:query].merge!(:email => @email, :token => @api_key)
+      options[:query].merge!(:email => @email, :token => @token)
       results = self.class.get(url, options)
       raise ArgumentError, "Probable bad API information given" if results == {}
       return results

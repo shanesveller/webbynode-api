@@ -4,8 +4,8 @@ class WebbyNode
   # @author Shane Sveller
   # @since 0.0.1
   class Client < WebbyNode::APIObject
-    def initialize(email, api_key)
-      super(email, api_key)
+    def initialize(options = {})
+      super(options)
       @data = auth_get("/api/xml/client")["hash"]["client"]
     end
   end
@@ -29,10 +29,10 @@ class WebbyNode
     #   WebbyNode::Webby.new(email, api_key, "webby1")
     # @example Fetch an Array of Webbies
     #   WebbyNode::Webby.new(email, api_key)
-    def initialize(email, api_key, hostname = nil)
-      super(email, api_key)
-      if hostname
-        @hostname = hostname
+    def initialize(options = {})
+      super(options)
+      if options[:hostname]
+        @hostname = options[:hostname]
       else
         @data = auth_get("/api/xml/webbies")["hash"]["webbies"]
       end
@@ -67,10 +67,10 @@ class WebbyNode
     # @param [String] email E-mail address used for API access
     # @param [String] api_key API token used for API access
     # @param [option, Integer] id ID that represents an individual zone
-    def initialize(email, api_key, id = nil)
-      super(email, api_key)
-      if id
-        @id = id
+    def initialize(options = {})
+      super(options)
+      if options[:id]
+        @id = options[:id]
         @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
       else
         @data = auth_get("/api/xml/dns")["hash"]
