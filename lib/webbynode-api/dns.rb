@@ -151,6 +151,11 @@ class WebbyNode
       end
     end
 
+    # Represents a single DNS record
+    #
+    # @author Shane Sveller
+    # @since 0.1.3
+    # @version 0.1.0
     class Record < WebbyNode::APIObject
       def initialize(options = {})
         raise ArgumentError, ":id is a required argument" unless options[:id]
@@ -159,6 +164,12 @@ class WebbyNode
         @data = auth_get("/api/xml/records/#{@id}")["hash"]["record"]
       end
 
+      # Creates a new DNS record
+      #
+      # @option options [String] :email E-mail address used for API access
+      # @option options [String] :token API token used for API access
+      # @option options [String] :type DNS record type i.e. A, CNAME or MX
+      # @option options [String] :data DNS record data, typically an IP address
       def self.create(options = {})
         raise ArgumentError, ":email and :token are required arguments for API access" unless options[:email] && options[:token]
         raise ArgumentError, ":data and :type are required arguments" unless options[:data] && options[:type]
