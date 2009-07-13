@@ -21,6 +21,18 @@ is currently based on the API guide version 2.
 
 ##Usage and Examples
 
+This gem now includes a basic commandline utility named `webby`.
+You can pass your email and token as commandline options, or place them
+in a YAML file in `~/.webbynode.yml`, like so:
+    email: example@email.com
+    token: 123456abcdef
+You can then use the commandline utility like so
+    webby -a webby status webby1
+    webby -a webby restart webby1
+If you do not create the YAML file, the above lines might look like:
+    webby -email example@email.com -token 123456abcdef -a webby status webby1
+    webby -email example@email.com -token 123456abcdef -a webby restart webby1
+
 **Please visit the
 [YARD documentation](http://rdoc.info/projects/shanesveller/webbynode-api)
 hosted at [rdoc.info](http://rdoc.info) for usage, documentation and examples.**
