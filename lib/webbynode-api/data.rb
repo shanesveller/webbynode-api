@@ -72,6 +72,7 @@ class WebbyNode
   #
   # @author Shane Sveller
   # @since 0.0.2
+  # @version 0.1.0
   class DNS < WebbyNode::APIObject
     # Holds the ID used internally at WebbyNode that represents a given zone.
     attr_accessor :id
@@ -79,17 +80,16 @@ class WebbyNode
     # Fetches either a single zone or an Array of all zones based on the presence
     # of the id parameter.
     #
-    # @param [String] email E-mail address used for API access
-    # @param [String] api_key API token used for API access
-    # @param [option, Integer] id ID that represents an individual zone
+    # @option options [String] :email E-mail address used for API access
+    # @option options [String] :token API token used for API access
+    # @option options [Integer] :id ID that represents an individual zone
+    # @raise [ArgumentError] Raises ArgumentError if the :id option is missing
+    #   from the optins parameter.
     def initialize(options = {})
+      raise ArgumentError, ":id is a required argument" unless options[:id]
       super(options)
-      if options[:id]
-        @id = options[:id]
-        @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
-      else
-        @data = auth_get("/api/xml/dns")["hash"]
-      end
+      @id = options[:id]
+      @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
     end
 
     # @since 0.0.3
@@ -135,6 +135,22 @@ class WebbyNode
       raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
       raise ArgumentError, ":id is a required argument" unless options[:id]
       return auth_post("/api/xml/dns/#{options[:id]}/delete", :query => options)["hash"]["success"]
+    end
+  end
+
+  # Represents an Array of all DNS zones present on the API account
+  #
+  # @author Shane Sveller
+  # @since 0.1.0
+  # @version 0.1.0
+  class DNSList < WebbyNode::APIObject
+    # Fetches an Array of all zones into @data.
+    #
+    # @option options [String] :email E-mail address used for API access
+    # @option options [String] :token API token used for API access
+    def initialize(options = {})
+      super(options)
+      @data = auth_get("/api/xml/dns")["hash"]["zones"]
     end
   end
 end

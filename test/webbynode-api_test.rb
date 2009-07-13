@@ -118,7 +118,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
     end
   end
 
-  context "fetching DNS data from API without id" do
+  context "fetching all DNS data from API" do
     setup do
       email = "example@email.com"
       token = "123456"
@@ -126,17 +126,17 @@ class WebbynodeApiTest < Test::Unit::TestCase
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
-      @dns = WebbyNode::DNS.new(:email => email, :token => token)
+      @zones = WebbyNode::DNSList.new(:email => email, :token => token)
     end
     should "return an array of zones with domain, status, id, and TTL" do
-      @dns.zones.is_a?(Array).should be(true)
-      @dns.zones.size.should == 3
-      zone = @dns.zones.first
+      @zones.data.is_a?(Array).should be(true)
+      @zones.data.size.should == 3
+      zone = @zones.data.first
       zone["id"].should == 1
       zone["status"].should == "Active"
       zone["domain"].should == "example.com."
       zone["ttl"].should == 86400
-      zone = @dns.zones.last
+      zone = @zones.data.last
       zone["id"].should == 132
       zone["status"].should == "Inactive"
       zone["domain"].should == "inactive.com."
