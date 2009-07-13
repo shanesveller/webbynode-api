@@ -180,4 +180,17 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
   end
   context "fetching a DNS record" do
   end
+  context "deleting a DNS record" do
+    setup do
+      @email = "example@email.com"
+      @token = "123456"
+      @id = 171
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/records\/\d+\/delete\?.+/i, :body => File.read("#{data_path}/delete-record.xml"))
+    end
+    should "return a boolean true for succesful deletion" do
+      WebbyNode::DNS::Record.delete(:email => @email, :token => @token, :id => @id)
+    end
+  end
 end

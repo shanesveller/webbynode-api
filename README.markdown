@@ -14,9 +14,10 @@ is currently based on the API guide version 2.
 * List of all individual records in a given DNS zone
 * Creation/deletion of DNS zones
 * Activation/deactivation of DNS zones
+* DNS record creation and deletion
 
 ##Planned Features
-* DNS record creation, editing and deletion
+* DNS record editing
 * Whatever else WebbyNode gives us in the API :)
 
 ##Usage and Examples

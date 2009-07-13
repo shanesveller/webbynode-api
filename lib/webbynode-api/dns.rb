@@ -185,6 +185,27 @@ class WebbyNode
         end
         return auth_post("/api/xml/dns/#{@id}/records/new", :query => options)["hash"]["record"]
       end
+
+      # Deletes an existing DNS record by ID
+      #
+      # @since 0.2.1
+      # @option options [String] :email E-mail address used for API access
+      # @option options [String] :token API token used for API access
+      # @option options [Integer] :id WebbyNode's internally-used ID that idenftifies the record
+      # @return [Boolean] Returns true upon succesful deletion of the zone.
+      # @raise [ArgumentError] Raises ArgumentError if :token, :email, or :id are
+      #   missing from the options parameter.
+      # @example Delete a DNS record with ID of 100
+      #   WebbyNode::DNS::Record.delete({
+      #     :email => email, :token => token,
+      #     :id => 100
+      #   })
+      #   # => true
+      def self.delete(options = {})
+        raise ArgumentError, ":email and :token are required arguments for API access" unless options[:email] && options[:token]
+        raise ArgumentError, ":id is a required argument" unless options[:id]
+        return auth_post("/api/xml/records/#{options[:id]}/delete", :query => options)["hash"]["success"]
+      end
     end
   end
 end
