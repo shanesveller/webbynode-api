@@ -17,6 +17,8 @@ class WebbyNode
       # @option options [Integer] :id ID that represents an individual zone
       # @raise [ArgumentError] Raises ArgumentError if the :id option is missing
       #   from the optins parameter.
+      # @example Get a zone with ID 100
+      #   @zone = WebbyNode::DNS::Zone.new(:email => email, :token => token, :id => 100)
       def initialize(options = {})
         raise ArgumentError, ":id is a required argument" unless options[:id]
         super(options)
@@ -24,14 +26,32 @@ class WebbyNode
         @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
       end
 
+      # Activates a DNS zone in WebbyNode's DNS servers
+      #
       # @since 0.1.2
+      # @return [String] Returns "Active" if successful
+      # @example Activate a zone with ID 100
+      #   @zone = WebbyNode::DNS::Zone.new(:email => email, :token => token, :id => 100)
+      #   @zone.status
+      #   # => "Inactive"
+      #   @zone.activate
+      #   # => "Active"
       def activate
         status = auth_post("/api/xml/dns/#{@id}", {:query => {"zone[status]" => "Active", :email => @email, :token => @token}})["hash"]["status"]
         raise "Unable to activate zone" unless status == "Active"
         return status
       end
 
+      # Activates a DNS zone in WebbyNode's DNS servers
+      #
       # @since 0.1.2
+      # @return [String] Returns "Inactive" if successful
+      # @example Deactivate a zone with ID 100
+      #   @zone = WebbyNode::DNS::Zone.new(:email => email, :token => token, :id => 100)
+      #   @zone.status
+      #   # => "Active"
+      #   @zone.deactivate
+      #   # => "Inactive"
       def deactivate
         status = auth_post("/api/xml/dns/#{@id}", {:query => {"zone[status]" => "Inactive", :email => @email, :token => @token}})["hash"]["status"]
         raise "Unable to deactivate zone" unless status == "Inactive"
