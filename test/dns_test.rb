@@ -8,7 +8,6 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
-      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       @zones = WebbyNode::DNS::ZoneList.new(:email => email, :token => token)
     end
     should "return an array of zones with domain, status, id, and TTL" do
@@ -33,9 +32,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       id = 1
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
-      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
-      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
       @dns = WebbyNode::DNS::Zone.new(:email => email, :token => token, :id => id)
     end
     should "return domain name, status, id and TTL" do
@@ -43,16 +40,6 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @dns.id.should == 1
       @dns.ttl.should == 86400
       @dns.status.should == "Active"
-    end
-    should "return an array of records with id, type, name, data, auxiliary data, and TTL" do
-      @dns.records.is_a?(Array).should be(true)
-      record = @dns.records.first
-      record["id"].should == 51
-      record["ttl"].should == 86400
-      record["data"].should == "200.100.200.100"
-      record["name"].should be(nil)
-      record["aux"].should == 0
-      record["type"].should == "A"
     end
   end
   context "creating a new DNS zone" do
@@ -66,21 +53,21 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/new\?.+/i, :body => File.read("#{data_path}/new-zone.xml"))
     end
     should "raise ArgumentError if API information isn't present" do
-      assert_raise(ArgumentError,"API access information via :email and :token are required arguments"){ WebbyNode::DNS::Zone.new_zone(:token => @token, :domain => @domain, :ttl => @ttl) }
-      assert_raise(ArgumentError,"API access information via :email and :token are required arguments"){ WebbyNode::DNS::Zone.new_zone(:email => @email, :domain => @domain, :ttl => @ttl) }
+      assert_raise(ArgumentError,"API access information via :email and :token are required arguments"){ WebbyNode::DNS::Zone.create_zone(:token => @token, :domain => @domain, :ttl => @ttl) }
+      assert_raise(ArgumentError,"API access information via :email and :token are required arguments"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :domain => @domain, :ttl => @ttl) }
     end
     should "raise ArgumentError if :domain or :ttl aren't included in method call" do
-      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :ttl => @ttl) }
-      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :domain => @domain) }
+      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :ttl => @ttl) }
+      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain) }
     end
     should "raise ArgumentError if :status is not a valid option" do
-      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :ttl => @ttl, :status => "Not active") }
-      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Active") }
-      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Inactive") }
-      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => nil) }
+      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :ttl => @ttl, :status => "Not active") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Active") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Inactive") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => nil) }
     end
     should "return a Hash containing the new zone's information" do
-      @new_zone =  WebbyNode::DNS::Zone.new_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Inactive")
+      @new_zone =  WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Inactive")
       @new_zone["id"].should == 171
       @new_zone["domain"].should == "example.com."
       @new_zone["ttl"].should == 86400
@@ -100,7 +87,28 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
     end
   end
   context "listing a DNS zone's records" do
-    should "raise ArgumentError if :id argument is absent"
-    should "return an Array of records"
+    setup do
+      @email = "example@email.com"
+      @token = "123456"
+      @id = 1
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
+    end
+    should "raise ArgumentError if :id argument is absent" do
+      assert_raise(ArgumentError, ":id is a required argument"){ WebbyNode::DNS::RecordList.new(:email => @email, :token => @token, :id => nil)}
+      assert_nothing_raised { WebbyNode::DNS::RecordList.new(:email => @email, :token => @token, :id => @id)}
+    end
+    should "set @data to an Array of records" do
+      @records = WebbyNode::DNS::RecordList.new(:email => @email, :token => @token, :id => @id)
+      @records.data.is_a?(Array).should be(true)
+      record = @records.data.first
+      record["id"].should == 51
+      record["ttl"].should == 86400
+      record["data"].should == "200.100.200.100"
+      record["name"].should be(nil)
+      record["aux"].should == 0
+      record["type"].should == "A"
+    end
   end
 end

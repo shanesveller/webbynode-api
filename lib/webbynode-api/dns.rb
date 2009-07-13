@@ -24,13 +24,6 @@ class WebbyNode
         @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
       end
 
-      # @since 0.0.3
-      # @return [Array<Hash>] Array of a zones' records, each individually is a Hash.
-      def records
-        raise "This method should only be called on DNS instances with an id" unless @id
-        auth_get("/api/xml/dns/#{@id}/records")["hash"]["records"]
-      end
-
       # @since 0.0.6
       # @option options [String] :email E-mail address used for API access
       # @option options [String] :token API token used for API access
@@ -39,7 +32,7 @@ class WebbyNode
       # @return [Hash] Hash of the new zone's information
       # @raise [ArgumentError] Raises ArgumentError if :token, :email, :domain,
       #   or :ttl are missing from the options parameter.
-      def self.new_zone(options = {})
+      def self.create_zone(options = {})
         raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
         raise ArgumentError, ":domain and :ttl are required arguments" unless options[:domain] && options[:ttl]
         if options[:status]
@@ -86,9 +79,17 @@ class WebbyNode
       end
     end
 
+    # Represents an Array of all DNS records for a given zone
+    #
+    # @author Shane Sveller
+    # @since 0.1.1
+    # @version 0.1.0
     class RecordList < WebbyNode::APIObject
       def initialize(options = {})
         raise ArgumentError, ":id is a required argument" unless options[:id]
+        super(options)
+        @id = options[:id]
+        @data = auth_get("/api/xml/dns/#{@id}/records")["hash"]["records"]
       end
     end
   end
