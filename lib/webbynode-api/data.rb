@@ -154,5 +154,11 @@ class WebbyNode
         @data = auth_get("/api/xml/dns")["hash"]["zones"]
       end
     end
+
+    class RecordList < WebbyNode::APIObject
+      def initialize(options = {})
+        raise ArgumentError, ":id is a required argument" unless options[:id]
+      end
+    end
   end
 end
