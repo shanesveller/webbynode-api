@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{webbynode-api}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shane Sveller"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "test/data/bad-auth.xml",
      "test/data/client.xml",
      "test/data/deactivate-zone.xml",
+     "test/data/delete-record.xml",
      "test/data/delete-zone.xml",
      "test/data/dns-1.xml",
      "test/data/dns-records.xml",
