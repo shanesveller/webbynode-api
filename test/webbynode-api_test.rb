@@ -68,7 +68,7 @@ class WebbynodeApiTest < Test::Unit::TestCase
     end
   end
 
-  context "fetching webbies data from API with hostname" do
+  context "fetching webby data from API" do
     setup do
       email = "example@email.com"
       token = "123456"
@@ -97,18 +97,18 @@ class WebbynodeApiTest < Test::Unit::TestCase
       @webby.status.should == "Rebooting"
     end
   end
-  context "fetching webbies data from API without hostname" do
+  context "fetching webbies data from API" do
     setup do
       email = "example@email.com"
       token = "123456"
       data_path = File.join(File.dirname(__FILE__), "data")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webbies\?.+/i, :body => File.read("#{data_path}/webbies.xml"))
-      @webbies = WebbyNode::Webby.new(:email => email, :token => token)
+      @webbies = WebbyNode::WebbyList.new(:email => email, :token => token)
     end
     should "return a array of webbies" do
-      @webbies.list.is_a?(Array).should be(true)
-      webby = @webbies.list.first
+      @webbies.data.is_a?(Array).should be(true)
+      webby = @webbies.data.first
       webby["status"].should == "on"
       webby["ip"].should == "222.111.222.111"
       webby["node"].should == "location-a01"

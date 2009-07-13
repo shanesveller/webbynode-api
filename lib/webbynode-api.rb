@@ -73,8 +73,8 @@ class WebbyNode
     #
     # @return [Object, nil] If the @data instance variable is set, and contains a hash
     #   with a key matching the missing method, return the value from that hash key.
-    #   Said value may be typecast into a Ruby object if the XML is formatted properly.
-    #   Otherwise returns nil.
+    #   Said value may be typecast into a Ruby object if the source XML is formatted
+    #   properly. Otherwise returns nil.
     def method_missing(method)
       key = @data[method.to_s] if @data
       key
