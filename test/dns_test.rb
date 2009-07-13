@@ -86,6 +86,35 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       WebbyNode::DNS::Zone.delete_zone(:email => @email, :token => @token, :id => @id)
     end
   end
+  context "activating and deactivating a zone" do
+    setup do
+      @email = "example@email.com"
+      @token = "123456"
+      @id = 171
+    end
+    should "raise RuntimeError if the action is unsuccesful" do
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/deactivate-zone.xml"))
+      assert_raise(RuntimeError, "Unable to activate zone"){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id).activate }
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/activate-zone.xml"))
+      assert_raise(RuntimeError, "Unable to deactivate zone"){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id).deactivate }
+    end
+    should "return the new status when activating or deactivating" do
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/activate-zone.xml"))
+      WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id).activate.should == "Active"
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/deactivate-zone.xml"))
+      WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id).deactivate.should == "Inactive"
+    end
+  end
   context "listing a DNS zone's records" do
     setup do
       @email = "example@email.com"

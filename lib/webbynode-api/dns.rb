@@ -24,6 +24,20 @@ class WebbyNode
         @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
       end
 
+      # @since 0.1.2
+      def activate
+        status = auth_post("/api/xml/dns/#{@id}", {:query => {"zone[status]" => "Active", :email => @email, :token => @token}})["hash"]["status"]
+        raise "Unable to activate zone" unless status == "Active"
+        return status
+      end
+
+      # @since 0.1.2
+      def deactivate
+        status = auth_post("/api/xml/dns/#{@id}", {:query => {"zone[status]" => "Inactive", :email => @email, :token => @token}})["hash"]["status"]
+        raise "Unable to deactivate zone" unless status == "Inactive"
+        return status
+      end
+
       # @since 0.0.6
       # @option options [String] :email E-mail address used for API access
       # @option options [String] :token API token used for API access
