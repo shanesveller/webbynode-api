@@ -78,7 +78,7 @@ class WebbyNode
       #     :status => "Inactive"
       #   })
       def self.create_zone(options = {})
-        raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
+        raise ArgumentError, ":email and :token are required arguments for API access" unless options[:email] && options[:token]
         raise ArgumentError, ":domain and :ttl are required arguments" unless options[:domain] && options[:ttl]
         if options[:status]
           raise ArgumentError, ":status must be 'Active' or 'Inactive'" unless %w(Active Inactive).include? options[:status]
@@ -108,7 +108,7 @@ class WebbyNode
       #   })
       #   # => true
       def self.delete_zone(options = {})
-        raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
+        raise ArgumentError, ":email and :token are required arguments for API access" unless options[:email] && options[:token]
         raise ArgumentError, ":id is a required argument" unless options[:id]
         return auth_post("/api/xml/dns/#{options[:id]}/delete", :query => options)["hash"]["success"]
       end
@@ -148,6 +148,31 @@ class WebbyNode
         super(options)
         @id = options[:id]
         @data = auth_get("/api/xml/dns/#{@id}/records")["hash"]["records"]
+      end
+    end
+
+    class Record < WebbyNode::APIObject
+      def initialize(options = {})
+        raise ArgumentError, ":id is a required argument" unless options[:id]
+        super(options)
+        @id = options[:id]
+        @data = auth_get("/api/xml/records/#{@id}")["hash"]["record"]
+      end
+
+      def self.create(options = {})
+        raise ArgumentError, ":email and :token are required arguments for API access" unless options[:email] && options[:token]
+        raise ArgumentError, ":data and :type are required arguments" unless options[:data] && options[:type]
+        valid_types = %w(A CNAME MX)
+        raise ArgumentError, "#{options[:type]} is not a valid value for :type" unless valid_types.include?(options[:type])
+        @id = options[:id]
+        options.delete(:id)
+        for key in options.keys
+          if %w(type name data aux ttl).include? key.to_s
+            options["record[#{key.to_s}]"] = options[key]
+            options.delete(key)
+          end
+        end
+        return auth_post("/api/xml/dns/#{@id}/records/new", :query => options)["hash"]["record"]
       end
     end
   end

@@ -49,8 +49,6 @@ class WebbyNode
         return auth_get("/api/xml/webby/#{@hostname}/status")["hash"]["status"]
       elsif %w(start shutdown reboot).include? method.to_s
         return auth_get("/api/xml/webby/#{@hostname}/#{method.to_s}")["hash"]["job_id"]
-      elsif method.to_s == "list"
-        return @data
       else
         raise ArgumentError, "No such action possible on a Webby."
       end

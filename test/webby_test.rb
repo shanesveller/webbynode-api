@@ -29,6 +29,9 @@ class WebbyNodeWebbyTest < Test::Unit::TestCase
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/webby\/\w+\/status\?.+/i, :body => File.read("#{data_path}/webby-status-reboot.xml"))
       @webby.status.should == "Rebooting"
     end
+    should "raise ArgumentError if a bad method is called" do
+      assert_raise(ArgumentError, "No such action possible on a Webby."){ @webby.restart }
+    end
   end
   context "fetching webbies data from API" do
     setup do

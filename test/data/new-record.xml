@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hash>
+  <record>
+    <type>A</type>
+    <ttl type="integer">86400</ttl>
+    <aux type="integer">0</aux>
+    <data>111.222.111.222</data>
+    <name></name>
+    <id type="integer">181</id>
+  </record>
+</hash>
