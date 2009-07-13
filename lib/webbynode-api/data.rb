@@ -5,6 +5,13 @@ class WebbyNode
   # @since 0.0.1
   # @version 0.1.0
   class Client < WebbyNode::APIObject
+    # Fills the @data variable with a hash of information about the client.
+    #
+    # @option options [String] :email E-mail address used for API access
+    # @option options [String] :token API token used for API access
+    # @example Get amount of credit left on an account
+    #   @client = WebbyNode::Client.new(:email => email, :token)
+    #   pp @client.credit # => 1.5
     def initialize(options = {})
       super(options)
       @data = auth_get("/api/xml/client")["hash"]["client"]

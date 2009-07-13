@@ -66,6 +66,17 @@ class WebbyNode
       # @return [Hash] Hash of the new zone's information
       # @raise [ArgumentError] Raises ArgumentError if :token, :email, :domain,
       #   or :ttl are missing from the options parameter.
+      # @example Create a zone with the domain example.com and TTL of 86400
+      #   WebbyNode::DNS::Zone.create_zone({
+      #     :email => email, :token => token,
+      #     :domain => "example.com.", :ttl => 86400
+      #   })
+      # @example Create an *inactive* zone with the domain example.com and TTL of 86400
+      #   WebbyNode::DNS::Zone.create_zone({
+      #     :email => email, :token => token,
+      #     :domain => "example.com.", :ttl => 86400,
+      #     :status => "Inactive"
+      #   })
       def self.create_zone(options = {})
         raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
         raise ArgumentError, ":domain and :ttl are required arguments" unless options[:domain] && options[:ttl]
@@ -89,7 +100,13 @@ class WebbyNode
       # @option options [Integer] :id WebbyNode's internally-used ID that idenftifies the zone
       # @return [Boolean] Returns true upon succesful deletion of the zone.
       # @raise [ArgumentError] Raises ArgumentError if :token, :email, or :id are
-      # missing from the options parameter.
+      #   missing from the options parameter.
+      # @example Delete a zone with ID of 100
+      #   WebbyNode::DNS::Zone.delete_zone({
+      #     :email => email, :token => token,
+      #     :id => 100
+      #   })
+      #   # => true
       def self.delete_zone(options = {})
         raise ArgumentError, "API access information via :email and :token are required arguments" unless options[:email] && options[:token]
         raise ArgumentError, ":id is a required argument" unless options[:id]
@@ -119,6 +136,13 @@ class WebbyNode
     # @since 0.1.1
     # @version 0.1.0
     class RecordList < WebbyNode::APIObject
+      # Fills the @data variable with an Array of Hashes containing individual
+      # DNS records in a zone.
+      #
+      # @option options [String] :email E-mail address used for API access
+      # @option options [String] :token API token used for API access
+      # @option options [Integer] :id ID used internally by WebbyNode to identify the zone
+      # @raise [ArgumentError] Raises ArgumentError if :email, :token, or :id are absent from options
       def initialize(options = {})
         raise ArgumentError, ":id is a required argument" unless options[:id]
         super(options)
