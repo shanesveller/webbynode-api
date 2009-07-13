@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+gem 'optiflag'
+require 'optiflag'
+require 'lib/webbynode-api'
+
+module WebbyNodeTool extend OptiFlagSet
+  optional_flag "email"
+  optional_flag "token"
+  flag "act" do
+    alternate_forms "action","A","a"
+    description "API action to be taken, in the form of <type> <action> <target>"
+    arity 3
+  end
+  optional_flag "verbose" do
+    no_args
+    alternate_forms "V","v"
+  end
+
+  and_process!
+end
+
+VERBOSE = ARGV.flags.verbose?
+
+if !ARGV.flags.email? || !ARGV.flags.token
+  yaml_config = File.join(ENV['HOME'],'.webbynode.yml')
+  if File.exist?(yaml_config)
+    puts "Loading API credentials from #{yaml_config}..." if VERBOSE
+    CONFIG = YAML.load_file yaml_config
+    EMAIL = CONFIG["email"]
+    TOKEN = CONFIG["token"]
+  else
+    puts "Email or token parameter missing and no config file exists at ~/.webbynode.yml"
+  end
+else
+  EMAIL = ARGV.flags.email
+  TOKEN = ARGV.flags.token
+end
+
+type = ARGV.flags.act[0]
+action = ARGV.flags.act[1]
+target = ARGV.flags.act[2]
+case type
+when "webby" then
+  case action
+    when "status"
+      puts "Webby Status: #{target}: " + WebbyNode::Webby.new(:email => EMAIL, :token => TOKEN, :hostname => target).status
+    when "restart", "start"
+      puts "#{action.capitalize}ing Webby: #{target}..."
+      puts "Job ID: " + WebbyNode::Webby.new(:email => EMAIL, :token => TOKEN, :hostname => target).send(action).to_s
+    when "shutdown"
+      puts "Shutting Down Webby: #{target}..."
+      puts "Job ID: " + WebbyNode::Webby.new(:email => EMAIL, :token => TOKEN, :hostname => target).send(action).to_s
+    else
+      puts "Not a valid action for webby #{target}."
+  end
+else
+  puts "Valid options for type:"
+  %w(webby).each {|type| puts type.capitalize }
+end
