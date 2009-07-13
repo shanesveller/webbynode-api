@@ -82,4 +82,4 @@ class WebbyNode
   end
 end
 
-require File.join(File.dirname(__FILE__), 'webbynode-api', 'data')
+Dir["#{File.dirname(__FILE__)}/webbynode-api/*.rb"].each {|file| require file}
