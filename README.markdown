@@ -25,6 +25,11 @@ is currently based on the API guide version 2.
 [YARD documentation](http://rdoc.info/projects/shanesveller/webbynode-api)
 hosted at [rdoc.info](http://rdoc.info) for usage, documentation and examples.**
 
+Alternately, the YARD docs can be generated and viewed locally if you have the
+`yard` gem installed.
+    rake yardoc
+    open doc/index.html
+
 ##Copyright
 
 Copyright (c) 2009 Shane Sveller. See LICENSE for details.
