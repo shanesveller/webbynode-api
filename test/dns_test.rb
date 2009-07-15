@@ -179,6 +179,25 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
     end
   end
   context "when fetching a DNS record" do
+    setup do
+      @email = "example@email.com"
+      @token = "123456"
+      @id = 103
+      data_path = File.join(File.dirname(__FILE__), "data")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/records\/\d+\?.+/i, :body => File.read("#{data_path}/record-1.xml"))
+    end
+    should "raise ArgumentError if :id argument is absent" do
+      assert_raise(ArgumentError, ":id is a required argument"){ WebbyNode::DNS::Record.new(:email => @email, :token => @token, :id => nil)}
+      assert_nothing_raised { WebbyNode::DNS::Record.new(:email => @email, :token => @token, :id => @id)}
+    end
+    should "set @data to a Hash of record information" do
+      @record = WebbyNode::DNS::Record.new(:email => @email, :token => @token, :id => @id)
+      @record.data.is_a?(Hash).should be(true)
+      for key in %w(type ttl aux data name id)
+        @record.data.keys.include?(key).should be(true)
+      end
+    end
   end
   context "when deleting a DNS record" do
     setup do
