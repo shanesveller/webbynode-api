@@ -14,7 +14,7 @@ module WebbyNodeTool extend OptiFlagSet
   optional_flag "token"
   flag "act" do
     alternate_forms "action","A","a"
-    description "API action to be taken, in the form of <type> <action> <target>"
+    description "API action to be taken, in the form of <type> <action> <argument>"
     arity 3
   end
   optional_flag "verbose" do
@@ -48,6 +48,13 @@ target = ARGV.flags.act[2]
 case type
 when "webby" then
   case action
+    when "list"
+      webbies = WebbyNode::WebbyList.new(:email => EMAIL, :token => TOKEN).data
+      for webby in webbies
+        puts "Webby - hostname: #{webby['name']} - ip: #{webby['ip']} - status: #{webby['status']}"
+        puts "        node: #{webby['node']} - plan: #{webby['plan']}"
+        puts "        notes: #{webby['notes']}" if webby['notes']
+      end
     when "status"
       puts "Webby Status: #{target}: " + WebbyNode::Webby.new(:email => EMAIL, :token => TOKEN, :hostname => target).status
     when "restart", "start"
@@ -57,7 +64,8 @@ when "webby" then
       puts "Shutting Down Webby: #{target}..."
       puts "Job ID: " + WebbyNode::Webby.new(:email => EMAIL, :token => TOKEN, :hostname => target).send(action).to_s
     else
-      puts "Not a valid action for webby #{target}."
+      puts "Not a valid action for a webby: #{action}."
+      puts "Valid options include: " + %w(list status start restart shutdown).join(", ")
   end
 else
   puts "Valid options for type:"
