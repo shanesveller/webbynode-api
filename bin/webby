@@ -3,7 +3,11 @@
 require 'rubygems'
 gem 'optiflag'
 require 'optiflag'
-require 'lib/webbynode-api'
+begin
+  require File.join(File.dirname(__FILE__), '..', 'lib', 'webbynode-api')
+rescue LoadError
+  require 'webbynode-api'
+end
 
 module WebbyNodeTool extend OptiFlagSet
   optional_flag "email"
