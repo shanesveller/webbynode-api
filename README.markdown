@@ -20,6 +20,17 @@ is currently based on the API guide version 2.
 * DNS record editing
 * Whatever else WebbyNode gives us in the API :)
 
+##Dependencies
+###Runtime
+* httparty
+* crack
+
+###Testing
+* thoughtbot-shoulda
+* jeremymcanally-matchy
+* fakeweb
+* jgre-monkeyspecdoc
+
 ##Usage and Examples
 ###Command-Line Utility
 This gem now includes a basic commandline utility named `webby`.
