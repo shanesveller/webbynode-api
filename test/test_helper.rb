@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'test/unit'
-require 'shoulda'
-%w(matchy fakeweb pp).each {|x| require x }
+%w(shoulda matchy fakeweb monkeyspecdoc pp).each {|x| require x }
 
 FakeWeb.allow_net_connect = false
 

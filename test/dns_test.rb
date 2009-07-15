@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class WebbyNodeDNSTest < Test::Unit::TestCase
-  context "fetching all DNS data from API" do
+  context "when fetching all DNS data from API" do
     setup do
       email = "example@email.com"
       token = "123456"
@@ -25,7 +25,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       zone["ttl"].should == 86400
     end
   end
-  context "fetching DNS data from API with id" do
+  context "when fetching DNS data from API with id" do
     setup do
       email = "example@email.com"
       token = "123456"
@@ -42,7 +42,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @dns.status.should == "Active"
     end
   end
-  context "creating a new DNS zone" do
+  context "when creating a new DNS zone" do
     setup do
       @email = "example@email.com"
       @token = "123456"
@@ -74,7 +74,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @new_zone["ttl"].should == 86400
     end
   end
-  context "deleting a DNS zone" do
+  context "when deleting a DNS zone" do
     setup do
       @email = "example@email.com"
       @token = "123456"
@@ -87,7 +87,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       WebbyNode::DNS::Zone.delete_zone(:email => @email, :token => @token, :id => @id)
     end
   end
-  context "activating and deactivating a zone" do
+  context "when activating or deactivating a DNS zone" do
     setup do
       @email = "example@email.com"
       @token = "123456"
@@ -116,7 +116,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id).deactivate.should == "Inactive"
     end
   end
-  context "listing a DNS zone's records" do
+  context "when listing a DNS zone's records" do
     setup do
       @email = "example@email.com"
       @token = "123456"
@@ -141,7 +141,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       record["type"].should == "A"
     end
   end
-  context "creating a DNS record" do
+  context "when creating a DNS record" do
     setup do
       @email = "example@email.com"
       @token = "123456"
@@ -178,9 +178,9 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @new_record
     end
   end
-  context "fetching a DNS record" do
+  context "when fetching a DNS record" do
   end
-  context "deleting a DNS record" do
+  context "when deleting a DNS record" do
     setup do
       @email = "example@email.com"
       @token = "123456"

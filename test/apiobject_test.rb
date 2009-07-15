@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class WebbyNodeAPIObjectTest < Test::Unit::TestCase
-  context "with bad API token or email" do
+  context "when fetching an API object" do
     setup do
       @email ="example@email.com"
       @token = "123456"

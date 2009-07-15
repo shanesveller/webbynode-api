@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class WebbyNodeWebbyTest < Test::Unit::TestCase
-  context "fetching webby data from API" do
+  context "when fetching webby data from API" do
     setup do
       email = "example@email.com"
       token = "123456"
@@ -33,7 +33,7 @@ class WebbyNodeWebbyTest < Test::Unit::TestCase
       assert_raise(ArgumentError, "No such action possible on a Webby."){ @webby.restart }
     end
   end
-  context "fetching webbies data from API" do
+  context "when fetching webbies data from API" do
     setup do
       email = "example@email.com"
       token = "123456"

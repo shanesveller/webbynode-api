@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class WebbyNodeClientTest < Test::Unit::TestCase
-  context "fetching client data from API" do
+  context "when fetching client data from API" do
     setup do
       email = "example@email.com"
       token = "123456"
