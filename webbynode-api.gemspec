@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{webbynode-api}
-  s.version = "0.2.2"
+  s.version = "0.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shane Sveller"]
-  s.date = %q{2009-07-14}
+  s.date = %q{2009-07-17}
   s.default_executable = %q{webby}
   s.email = %q{shanesveller@gmail.com}
   s.executables = ["webby"]
@@ -26,18 +26,21 @@ Gem::Specification.new do |s|
      "lib/webbynode-api/data.rb",
      "lib/webbynode-api/dns.rb",
      "test/apiobject_test.rb",
+     "test/bin_test.rb",
      "test/client_test.rb",
-     "test/data/activate-zone.xml",
      "test/data/bad-auth.xml",
      "test/data/client.xml",
-     "test/data/deactivate-zone.xml",
-     "test/data/delete-record.xml",
-     "test/data/delete-zone.xml",
-     "test/data/dns-1.xml",
-     "test/data/dns-records.xml",
-     "test/data/dns.xml",
-     "test/data/new-record.xml",
-     "test/data/new-zone.xml",
+     "test/data/dns/activate-zone.xml",
+     "test/data/dns/deactivate-zone.xml",
+     "test/data/dns/delete-record.xml",
+     "test/data/dns/delete-zone.xml",
+     "test/data/dns/dns-1.xml",
+     "test/data/dns/dns-records.xml",
+     "test/data/dns/dns.xml",
+     "test/data/dns/edit-zone.xml",
+     "test/data/dns/new-record.xml",
+     "test/data/dns/new-zone.xml",
+     "test/data/dns/record-1.xml",
      "test/data/webbies.xml",
      "test/data/webby-reboot.xml",
      "test/data/webby-shutdown.xml",
@@ -51,22 +54,24 @@ Gem::Specification.new do |s|
      "test/webby_test.rb",
      "webbynode-api.gemspec"
   ]
+  s.has_rdoc = true
   s.homepage = %q{http://github.com/shanesveller/webbynode-api}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.4}
+  s.rubygems_version = %q{1.3.1}
   s.summary = %q{wraps the WebbyNode API into nice Ruby objects}
   s.test_files = [
-    "test/test_helper.rb",
-     "test/webby_test.rb",
-     "test/dns_test.rb",
+    "test/apiobject_test.rb",
+     "test/bin_test.rb",
      "test/client_test.rb",
-     "test/apiobject_test.rb"
+     "test/dns_test.rb",
+     "test/test_helper.rb",
+     "test/webby_test.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
+    s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<httparty>, [">= 0.4.3"])
