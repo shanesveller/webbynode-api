@@ -26,6 +26,36 @@ class WebbyNode
         @data = auth_get("/api/xml/dns/#{@id}")["hash"]["zone"]
       end
 
+      # Edits attributes of an existing DNS zone
+      #
+      # @option new_values [optional, String] :domain Domain name for the DNS zone
+      # @option new_values [optional, Integer] :ttl Time To Live for the DNS zone
+      # @option new_values [optional, String] :status Whether or not to serve the zone.
+      #   Valid values are Active or Inactive.
+      # @raise [ArgumentError] Raises ArgumentError if an invalid value is passed for
+      #   :status.
+      # @return [Hash] returns a Hash with String keys of the newly-edited zone's data
+      # @example Change a zone's TTL
+      #   @zone = WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id)
+      #   @zone.ttl # => 86400
+      #   @zone.edit(:ttl => 14400)
+      #   @zone.ttl # => 14400
+      # @example Change a zone's domain name, TTL and activate it
+      #   @zone = WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id)
+      #   @zone.edit(:domain => "newurl.com.", :status => "Active", :ttl => 86600)
+      def edit(new_values = {})
+        if new_values[:status]
+          raise ArgumentError, ":status must be Active or Inactive" unless %w(Active Inactive).include?(new_values[:status])
+        end
+        new_values.reject! {|key, value| %w(domain ttl status).include?(key) == false }
+        for key in new_values.keys
+          new_values["zone[#{key.to_s}]"] = new_values[key]
+          new_values.delete(key)
+        end
+        new_values.merge!(:email => @email, :token => @token)
+        @data = self.class.auth_post("/api/xml/dns/#{@id}", :query => new_values)["hash"]
+      end
+
       # Activates a DNS zone in WebbyNode's DNS servers
       #
       # @since 0.1.2

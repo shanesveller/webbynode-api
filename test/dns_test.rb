@@ -35,6 +35,9 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       @dns = WebbyNode::DNS::Zone.new(:email => email, :token => token, :id => id)
     end
+    should "raise ArgumentError if :id is absent" do
+      assert_raise(ArgumentError, ":id is a required argument"){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token) }
+    end
     should "return domain name, status, id and TTL" do
       @dns.domain.should == "example.com."
       @dns.id.should == 1
@@ -62,7 +65,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain) }
     end
     should "raise ArgumentError if :status is not a valid option" do
-      assert_raise(ArgumentError, ":domain and :ttl are required arguments"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :ttl => @ttl, :status => "Not active") }
+      assert_raise(ArgumentError, ":status can only be Active or Inactive"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :ttl => @ttl, :status => "Not active") }
       assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Active") }
       assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => "Inactive") }
       assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :domain => @domain, :ttl => @ttl, :status => nil) }
@@ -72,6 +75,41 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @new_zone["id"].should == 171
       @new_zone["domain"].should == "example.com."
       @new_zone["ttl"].should == 86400
+    end
+  end
+  context "when editing a DNS zone" do
+    setup do
+      @email = "example@email.com"
+      @token = "123456"
+      @domain = "example.com."
+      @id = 1
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
+      FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/edit-zone.xml"))
+    end
+    should "raise ArgumentError if API information isn't present" do
+      assert_raise(ArgumentError,":email and :token are required arguments for API access"){ WebbyNode::DNS::Zone.new(:token => @token, :domain => @domain, :id => @id) }
+      assert_raise(ArgumentError,":email and :token are required arguments for API access"){ WebbyNode::DNS::Zone.new(:email => @email, :domain => @domain, :id => @id) }
+      assert_raise(ArgumentError,":email and :token are required arguments for API access"){ WebbyNode::DNS::Zone.new(:domain => @domain, :id => @id) }
+    end
+    should "raise ArgumentError if :status is not a valid option" do
+      assert_raise(ArgumentError, ":status can only be Active or Inactive"){ WebbyNode::DNS::Zone.create_zone(:email => @email, :token => @token, :ttl => @ttl, :status => "Not active") }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id) }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id) }
+      assert_nothing_raised(ArgumentError){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id) }
+    end
+    should "alter information on API and update the object to reflect changes" do
+      @zone = WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id)
+      @zone.id.should == @id
+      @zone.domain.should == "example.com."
+      @zone.ttl.should == 86400
+      @zone.status.should == "Active"
+      @zone.edit(:domain => "new-example.com.", :ttl => 14400, :status => "Inactive")
+      @zone.id.should == @id
+      @zone.domain.should == "new-example.com."
+      @zone.ttl.should == 14400
+      @zone.status.should == "Inactive"
     end
   end
   context "when deleting a DNS zone" do
