@@ -5,7 +5,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
     setup do
       email = "example@email.com"
       token = "123456"
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
       @zones = WebbyNode::DNS::ZoneList.new(:email => email, :token => token)
@@ -30,7 +30,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       email = "example@email.com"
       token = "123456"
       id = 1
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       @dns = WebbyNode::DNS::Zone.new(:email => email, :token => token, :id => id)
@@ -48,7 +48,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @token = "123456"
       @domain = "example.com."
       @ttl = 86400
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/new\?.+/i, :body => File.read("#{data_path}/new-zone.xml"))
     end
@@ -79,7 +79,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @email = "example@email.com"
       @token = "123456"
       @id = 171
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/delete\?.+/i, :body => File.read("#{data_path}/delete-zone.xml"))
     end
@@ -94,7 +94,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @id = 171
     end
     should "raise RuntimeError if the action is unsuccesful" do
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/deactivate-zone.xml"))
@@ -105,7 +105,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       assert_raise(RuntimeError, "Unable to deactivate zone"){ WebbyNode::DNS::Zone.new(:email => @email, :token => @token, :id => @id).deactivate }
     end
     should "return the new status when activating or deactivating" do
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/dns-1.xml"))
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\?.+/i, :body => File.read("#{data_path}/activate-zone.xml"))
@@ -121,7 +121,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @email = "example@email.com"
       @token = "123456"
       @id = 1
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\?.+/i, :body => File.read("#{data_path}/dns-records.xml"))
     end
@@ -146,7 +146,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @email = "example@email.com"
       @token = "123456"
       @id = 1
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\/\d+\/records\/new\?.+/i, :body => File.read("#{data_path}/new-record.xml"))
     end
@@ -183,7 +183,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @email = "example@email.com"
       @token = "123456"
       @id = 103
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/records\/\d+\?.+/i, :body => File.read("#{data_path}/record-1.xml"))
     end
@@ -204,7 +204,7 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       @email = "example@email.com"
       @token = "123456"
       @id = 171
-      data_path = File.join(File.dirname(__FILE__), "data")
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
       FakeWeb.clean_registry
       FakeWeb.register_uri(:post, /^https:\/\/manager\.webbynode\.com\/api\/xml\/records\/\d+\/delete\?.+/i, :body => File.read("#{data_path}/delete-record.xml"))
     end
