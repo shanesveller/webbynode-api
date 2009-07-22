@@ -11,6 +11,7 @@ is currently based on the API guide version 2.
 * Webby information (status) and simple actions (start, shutdown, reboot)
 * List all webbies
 * DNS zone information such as domain name, TTL, and status
+* Look up DNS zone by domain name
 * List of all individual records in a given DNS zone
 * Creation/deletion of DNS zones
 * Activation/deactivation of DNS zones
