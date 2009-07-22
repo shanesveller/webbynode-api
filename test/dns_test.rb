@@ -250,4 +250,34 @@ class WebbyNodeDNSTest < Test::Unit::TestCase
       WebbyNode::DNS::Record.delete(:email => @email, :token => @token, :id => @id)
     end
   end
+  context "when finding a zone by name" do
+    setup do
+      @email = "example@email.com"
+      @token = "123456"
+      @domain = "example.com."
+      data_path = File.join(File.dirname(__FILE__), "data", "dns")
+      FakeWeb.clean_registry
+      FakeWeb.register_uri(:get, /^https:\/\/manager\.webbynode\.com\/api\/xml\/dns\?.+/i, :body => File.read("#{data_path}/dns.xml"))
+    end
+    should "raise ArgumentError if :domain argument is absent" do
+      assert_raise(ArgumentError, ":domain is a required argument"){ WebbyNode::DNS::Zone.find_by_domain(:email => @email, :token => @token, :domain => nil)}
+      assert_nothing_raised{ WebbyNode::DNS::Zone.find_by_domain(:email => @email, :token => @token, :domain => @domain)}
+    end
+    should "return nil unless domain exists in a zone on account" do
+      for bad_zone in %w(example2.com baddomain.com nonexistant.com)
+        zone = WebbyNode::DNS::Zone.find_by_domain(:email => @email, :token => @token, :domain => bad_zone)
+        zone.should be(nil)
+      end
+    end
+    should "return a hash for the domain if a zone exists" do
+      zone = WebbyNode::DNS::Zone.find_by_domain(:email => @email, :token => @token, :domain => @domain)
+      zone.should_not be(nil)
+      zone.is_a?(Hash).should be(true)
+      zone["domain"].should == @domain
+      zone["id"].should == 1
+      zone = WebbyNode::DNS::Zone.find_by_domain(:email => @email, :token => @token, :domain => "inactive.com.")
+      zone["domain"].should == "inactive.com."
+      zone["id"].should == 132
+    end
+  end
 end

@@ -142,6 +142,25 @@ class WebbyNode
         raise ArgumentError, ":id is a required argument" unless options[:id]
         return auth_post("/api/xml/dns/#{options[:id]}/delete", :query => options)["hash"]["success"]
       end
+
+      # @since 0.2.5
+      # @option options [String] :email E-mail address used for API access
+      # @option options [String] :token API token used for API access
+      # @option options [String] :domain Domain name to search for
+      # @return [Hash, nil] Returns a hash of data about the zone if it exists
+      #   or nil
+      # @raise [ArgumentError] Raises ArgumentError if :token, :email or :domain
+      #   are missing from the options parameter
+      # @example Look up a zone for the domain "example.com." (Note the final period.)
+      #   WebbyNode::DNS::Zone.find_by_domain(:email => @email, :token => @token,
+      #   :domain => "example.com.")
+      def self.find_by_domain(options = {})
+        raise ArgumentError, ":domain is a required argument" unless options[:domain]
+        domain = options[:domain]
+        all_zones = ZoneList.new(:email => options[:email], :token => options[:token])
+        all_zones.data.reject! {|zone| zone["domain"] != domain}
+        return all_zones.data.first || nil
+      end
     end
 
     # Represents an Array of all DNS zones present on the API account
