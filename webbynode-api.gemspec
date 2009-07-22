@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{webbynode-api}
-  s.version = "0.2.4"
+  s.version = "0.2.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shane Sveller"]
-  s.date = %q{2009-07-17}
+  s.date = %q{2009-07-22}
   s.default_executable = %q{webby}
   s.email = %q{shanesveller@gmail.com}
   s.executables = ["webby"]
